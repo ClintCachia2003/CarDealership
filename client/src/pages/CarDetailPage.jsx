@@ -5,10 +5,10 @@ import toast from 'react-hot-toast';
 import api from '../api';
 
 function formatPrice(p) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p);
+  return new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(p);
 }
 function formatMileage(m) {
-  return new Intl.NumberFormat('en-US').format(m);
+  return new Intl.NumberFormat('en-IE').format(m);
 }
 
 export default function CarDetailPage() {
@@ -58,7 +58,7 @@ export default function CarDetailPage() {
 
   const specs = [
     { icon: Calendar, label: 'Year', value: car.year },
-    { icon: Gauge, label: 'Mileage', value: `${formatMileage(car.mileage)} mi` },
+    { icon: Gauge, label: 'Mileage', value: `${formatMileage(car.mileage)} ${car.mileage_unit || 'km'}` },
     { icon: Fuel, label: 'Fuel Type', value: car.fuel_type || '—' },
     { icon: Settings2, label: 'Transmission', value: car.transmission || '—' },
     { icon: Palette, label: 'Color', value: car.color || '—' },

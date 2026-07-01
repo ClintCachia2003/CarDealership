@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Gauge, Calendar, DollarSign } from 'lucide-react';
+import { Gauge, Calendar } from 'lucide-react';
 
 function formatPrice(p) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p);
+  return new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(p);
 }
 
 function formatMileage(m) {
-  return new Intl.NumberFormat('en-US').format(m);
+  return new Intl.NumberFormat('en-IE').format(m);
 }
 
 export default function CarCard({ car }) {
@@ -41,7 +41,7 @@ export default function CarCard({ car }) {
         {car.color && <p className="text-sm text-gray-500">{car.color}</p>}
         <div className="flex items-center gap-4 text-sm text-gray-500 mt-auto pt-2 border-t border-gray-100">
           <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{car.year}</span>
-          <span className="flex items-center gap-1"><Gauge className="w-3.5 h-3.5" />{formatMileage(car.mileage)} mi</span>
+          <span className="flex items-center gap-1"><Gauge className="w-3.5 h-3.5" />{formatMileage(car.mileage)} {car.mileage_unit || 'km'}</span>
         </div>
         <p className="text-blue-700 font-bold text-xl">{formatPrice(car.price)}</p>
       </div>

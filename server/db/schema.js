@@ -35,6 +35,7 @@ function initSchema(db) {
       year         INTEGER NOT NULL,
       price        REAL    NOT NULL,
       mileage      INTEGER NOT NULL,
+      mileage_unit TEXT    NOT NULL DEFAULT 'km' CHECK(mileage_unit IN ('km','mi')),
       vin          TEXT    UNIQUE,
       color        TEXT,
       description  TEXT,
@@ -62,6 +63,12 @@ function initSchema(db) {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+
+  // Migration: add mileage_unit if it doesn't exist yet
+  const cols = db.prepare("PRAGMA table_info(cars)").all().map((c) => c.name);
+  if (!cols.includes('mileage_unit')) {
+    db.exec("ALTER TABLE cars ADD COLUMN mileage_unit TEXT NOT NULL DEFAULT 'km'");
+  }
 }
 
 module.exports = { getDb };

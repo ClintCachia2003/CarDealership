@@ -112,6 +112,7 @@ const carValidation = [
   body('year').isInt({ min: 1900, max: new Date().getFullYear() + 2 }),
   body('price').isFloat({ min: 0 }),
   body('mileage').isInt({ min: 0 }),
+  body('mileageUnit').optional({ nullable: true }).isIn(['km', 'mi']),
   body('vin').optional({ nullable: true }).trim(),
   body('color').optional({ nullable: true }).trim(),
   body('description').optional({ nullable: true }).trim(),
@@ -139,16 +140,16 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { make, model, year, price, mileage, vin, color, description, fuelType, transmission } =
+    const { make, model, year, price, mileage, mileageUnit, vin, color, description, fuelType, transmission } =
       req.body;
     const db = getDb();
 
     const result = db
       .prepare(
-        `INSERT INTO cars (make, model, year, price, mileage, vin, color, description, fuel_type, transmission)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO cars (make, model, year, price, mileage, mileage_unit, vin, color, description, fuel_type, transmission)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
-      .run(make, model, year, price, mileage, vin || null, color || null, description || null, fuelType || null, transmission || null);
+      .run(make, model, year, price, mileage, mileageUnit || 'km', vin || null, color || null, description || null, fuelType || null, transmission || null);
 
     const carId = result.lastInsertRowid;
 
@@ -185,12 +186,12 @@ router.put(
     const car = db.prepare('SELECT * FROM cars WHERE id = ?').get(req.params.id);
     if (!car) return res.status(404).json({ error: 'Not found' });
 
-    const { make, model, year, price, mileage, vin, color, description, fuelType, transmission, status } = req.body;
+    const { make, model, year, price, mileage, mileageUnit, vin, color, description, fuelType, transmission, status } = req.body;
 
     db.prepare(
-      `UPDATE cars SET make=?, model=?, year=?, price=?, mileage=?, vin=?, color=?, description=?,
+      `UPDATE cars SET make=?, model=?, year=?, price=?, mileage=?, mileage_unit=?, vin=?, color=?, description=?,
        fuel_type=?, transmission=?, status=?, updated_at=datetime('now') WHERE id=?`
-    ).run(make, model, year, price, mileage, vin || null, color || null, description || null, fuelType || null, transmission || null, status || car.status, car.id);
+    ).run(make, model, year, price, mileage, mileageUnit || car.mileage_unit, vin || null, color || null, description || null, fuelType || null, transmission || null, status || car.status, car.id);
 
     // If new images uploaded, append them
     if (req.files && req.files.length) {

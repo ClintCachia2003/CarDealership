@@ -8,7 +8,7 @@ const FUEL_TYPES = ['Petrol', 'Diesel', 'Hybrid', 'Electric', 'Plug-in Hybrid', 
 const TRANSMISSIONS = ['Automatic', 'Manual', 'CVT', 'Semi-Automatic'];
 
 const EMPTY_FORM = {
-  make: '', model: '', year: '', price: '', mileage: '',
+  make: '', model: '', year: '', price: '', mileage: '', mileageUnit: 'km',
   vin: '', color: '', description: '', fuelType: '', transmission: '', status: 'available',
 };
 
@@ -31,7 +31,8 @@ export default function CarFormPage() {
     api.get(`/cars/${id}`).then(({ data }) => {
       setForm({
         make: data.make, model: data.model, year: data.year, price: data.price,
-        mileage: data.mileage, vin: data.vin || '', color: data.color || '',
+        mileage: data.mileage, mileageUnit: data.mileage_unit || 'km',
+        vin: data.vin || '', color: data.color || '',
         description: data.description || '', fuelType: data.fuel_type || '',
         transmission: data.transmission || '', status: data.status,
       });
@@ -125,12 +126,18 @@ export default function CarFormPage() {
               <input required type="number" min="1900" max="2030" value={form.year} onChange={set('year')} className={inputCls} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Price (USD) *</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Price (EUR) *</label>
               <input required type="number" min="0" step="0.01" value={form.price} onChange={set('price')} className={inputCls} />
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Mileage *</label>
-              <input required type="number" min="0" value={form.mileage} onChange={set('mileage')} className={inputCls} />
+              <div className="flex gap-2">
+                <input required type="number" min="0" value={form.mileage} onChange={set('mileage')} className={`${inputCls} flex-1`} />
+                <select value={form.mileageUnit} onChange={set('mileageUnit')} className="border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                  <option value="km">km</option>
+                  <option value="mi">mi</option>
+                </select>
+              </div>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">VIN</label>

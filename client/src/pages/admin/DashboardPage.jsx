@@ -5,10 +5,10 @@ import toast from 'react-hot-toast';
 import api from '../../api';
 
 function formatPrice(p) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p);
+  return new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(p);
 }
 function formatMileage(m) {
-  return new Intl.NumberFormat('en-US').format(m);
+  return new Intl.NumberFormat('en-IE').format(m);
 }
 
 export default function DashboardPage() {
@@ -140,7 +140,7 @@ export default function DashboardPage() {
                       </div>
                     </td>
                     <td className="px-4 py-4 font-medium text-gray-900">{formatPrice(car.price)}</td>
-                    <td className="px-4 py-4 text-gray-600">{formatMileage(car.mileage)} mi</td>
+                    <td className="px-4 py-4 text-gray-600">{formatMileage(car.mileage)} {car.mileage_unit || 'km'}</td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         car.status === 'available'
